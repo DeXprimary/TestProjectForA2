@@ -16,11 +16,24 @@ namespace Parser1
 {
     internal class Program
     {
-        static void Main(string[] args)
-        {
-            int counter = 0;
+        static int globalIterations = 0;
 
-            int totalCountSqlEx = 0;
+        static async Task Main(string[] args)
+        {
+            while (true)
+            {
+                var timer = Task.Run(() => Thread.Sleep(TimeSpan.FromMinutes(10)));
+
+                DoWork();
+
+                await timer;
+            }
+        }
+
+
+        static void DoWork()
+        {
+            int totalCounter = 0;
 
             int totalRowInserted = 0;
 
@@ -31,7 +44,7 @@ namespace Parser1
             try
             {
                 string connectionString = "Server=.\\SQLEXPRESS;Database=LesegaisParsed;Trusted_Connection=True;";
-                
+
                 using (var sqlConnection = new SqlConnection(connectionString))
                 {
                     List<Content> data = new List<Content>();
@@ -48,7 +61,7 @@ namespace Parser1
                         {
                             MyPostRequestToLesegais postRequest = new MyPostRequestToLesegais();
 
-                            data = postRequest.GetResponseObject(50000, counter);
+                            data = postRequest.GetResponseObject(50000, totalCounter);
 
                             if (data.Count == 0) break;
 
@@ -62,22 +75,22 @@ namespace Parser1
                         }
 
                         DataTable dataTable = MyToDataTableConverter.ToDataTable<Content>(data);
-                        
+
                         var sqlCommand = new SqlCommand("Proc_MyData", sqlConnection);
-                        
+
                         sqlCommand.CommandType = CommandType.StoredProcedure;
-                        
+
                         var sqlParameter = sqlCommand.Parameters.AddWithValue("@MyData_table", dataTable);
-                        
+
                         sqlParameter.SqlDbType = SqlDbType.Structured;
 
                         var sqlParameterReturnValue = sqlCommand.Parameters.Add("@RowCount", SqlDbType.Int);
 
                         sqlParameterReturnValue.Direction = ParameterDirection.ReturnValue;
-                        
+
                         sqlCommand.ExecuteNonQuery();
-                        
-                        counter++; totalRowInserted += (int)sqlParameterReturnValue.Value;
+
+                        totalCounter++; totalRowInserted += (int)sqlParameterReturnValue.Value;
 
                         Console.WriteLine("TimePassLocal: " + timePassLocal.Elapsed + " | Rows: " + sqlParameterReturnValue.Value.ToString());
 
@@ -92,13 +105,17 @@ namespace Parser1
                 Console.WriteLine("Main process is stopped: " + ex.ToString() + ex.Message);
             }
 
+            globalIterations++;
+
             Console.WriteLine();
 
-            Console.WriteLine("Iterations: " + counter + " | TotalRowsInserted: " + totalRowInserted + " | TotalTimePassed: " + timePassTotal.Elapsed);
+            Console.WriteLine("Iteration done: " + globalIterations + " | TotalRowsInserted: " + totalRowInserted + " | TotalTimePassed: " + timePassTotal.Elapsed);
 
-            Console.ReadLine();
+            Console.WriteLine();
+
+            Console.WriteLine("Next iteration will be run in " + (600 - timePassTotal.ElapsedMilliseconds / 1000) + " sec.");
+            
+            Console.WriteLine();
         }
-
-
     }
 }

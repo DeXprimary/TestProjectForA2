@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.IO;
 using Newtonsoft.Json;
+using System.Data;
 
 namespace Parser1
 {
@@ -98,7 +99,22 @@ namespace Parser1
             {             
                 using (StreamReader reader = new StreamReader(stream))
                 {
-                    deserializedObject = JsonConvert.DeserializeObject<MyResponseJsonModel>(reader.ReadToEnd());
+                    string tmp = reader.ReadToEnd();
+                    
+                    deserializedObject = JsonConvert.DeserializeObject<MyResponseJsonModel>(tmp);
+                    /*
+                    DataSet dataSet = JsonConvert.DeserializeObject<DataSet>(tmp);
+                    
+                    List<DataTable> someTables = new List<DataTable>();
+
+                    Console.WriteLine(dataSet.Tables);
+
+                    for (int k = 0; k < dataSet.Tables.Count; k++)
+                    {
+                        Console.WriteLine(dataSet.Tables[k].TableName);
+                        Console.WriteLine(dataSet.Tables[k].Rows);
+                    }
+                    */
                 }
 
                 Console.WriteLine("Get count objects with response: " + deserializedObject.data.searchReportWoodDeal.content.Length);

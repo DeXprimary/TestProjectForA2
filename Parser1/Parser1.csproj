@@ -46,8 +46,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MyToDataTableConverter.cs" />
     <Compile Include="MyPostRequestToLesegais.cs" />
     <Compile Include="MyResponseJsonModel.cs" />
+    <None Include="ProgramOld %28not used%29.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

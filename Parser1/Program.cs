@@ -20,7 +20,7 @@ namespace Parser1
 
         static async Task Main(string[] args)
         {
-            // Запускаем цикл выполнения программы с интервалом в 10 мин
+            // Запускаем цикл выполнения программы с интервалом в 10 мин.
             while (true)
             {
                 var timer = Task.Run(() => Thread.Sleep(TimeSpan.FromMinutes(10)));

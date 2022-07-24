@@ -8,8 +8,11 @@ using System.Data;
 
 namespace Parser1
 {
+    // Идея взята со StackOverflow
+    // Свойства класса перебрасываем в заголовок таблицы DataTable
+    // А объекты, соответственно, переписываем в записи таблицы DataTable
     internal static class MyToDataTableConverter
-    {
+    {                
         public static DataTable ToDataTable<T>(this IList<T> data)
         {
             PropertyDescriptorCollection props = TypeDescriptor.GetProperties(typeof(T));

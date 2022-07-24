@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Parser1
 {
+    // Плоский класс представляющий получаемый JSON объект
     internal class MyResponseJsonModel
     {
         public Data data { get; set; }

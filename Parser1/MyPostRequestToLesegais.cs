@@ -10,6 +10,7 @@ using System.Data;
 
 namespace Parser1
 {
+    // Класс реализует POST запрос, обработку ответа и десериализацию полученных объектов. 
     internal class MyPostRequestToLesegais
     {
         //public int CountRowsToRequest { get; set; }
@@ -102,19 +103,6 @@ namespace Parser1
                     string tmp = reader.ReadToEnd();
                     
                     deserializedObject = JsonConvert.DeserializeObject<MyResponseJsonModel>(tmp);
-                    /*
-                    DataSet dataSet = JsonConvert.DeserializeObject<DataSet>(tmp);
-                    
-                    List<DataTable> someTables = new List<DataTable>();
-
-                    Console.WriteLine(dataSet.Tables);
-
-                    for (int k = 0; k < dataSet.Tables.Count; k++)
-                    {
-                        Console.WriteLine(dataSet.Tables[k].TableName);
-                        Console.WriteLine(dataSet.Tables[k].Rows);
-                    }
-                    */
                 }
 
                 Console.WriteLine("Get count objects with response: " + deserializedObject.data.searchReportWoodDeal.content.Length);
@@ -122,6 +110,7 @@ namespace Parser1
             
             response.Close();
 
+            // Кладём набор десериализованных объектов в список и возвращаем из метода
             List<Content> notes = new List<Content>();
 
             foreach (var note in deserializedObject.data.searchReportWoodDeal.content)

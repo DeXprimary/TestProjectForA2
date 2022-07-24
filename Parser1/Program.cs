@@ -20,6 +20,7 @@ namespace Parser1
 
         static async Task Main(string[] args)
         {
+            // Запускаем цикл выполнения программы с интервалом в 10 мин
             while (true)
             {
                 var timer = Task.Run(() => Thread.Sleep(TimeSpan.FromMinutes(10)));
@@ -29,7 +30,6 @@ namespace Parser1
                 await timer;
             }
         }
-
 
         static void DoWork()
         {
@@ -51,14 +51,16 @@ namespace Parser1
 
                     sqlConnection.Open();
 
+                    // Запускаем цикл парсинга пока не поступит инструкция выхода из цикла в связи с пустым списком данных
                     while (true)
                     {
                         //if (counter == 7) break;
 
                         data.Clear();
 
+                        // Собираем в список десериализованные JSON данные из ответа на наш POST-запрос
                         try
-                        {
+                        {                            
                             MyPostRequestToLesegais postRequest = new MyPostRequestToLesegais();
 
                             data = postRequest.GetResponseObject(50000, totalCounter);
@@ -74,20 +76,24 @@ namespace Parser1
                             break;
                         }
 
+                        // Преобразуем наш список объектов в DataTable 
                         DataTable dataTable = MyToDataTableConverter.ToDataTable<Content>(data);
 
                         var sqlCommand = new SqlCommand("Proc_MyData", sqlConnection);
 
                         sqlCommand.CommandType = CommandType.StoredProcedure;
 
+                        // Отправляем наш DataTable на SQL сервер в виде параметра SQL-команды
                         var sqlParameter = sqlCommand.Parameters.AddWithValue("@MyData_table", dataTable);
 
                         sqlParameter.SqlDbType = SqlDbType.Structured;
 
+                        // Добавим возвращаемый параметр для получения числа добавленных записей
                         var sqlParameterReturnValue = sqlCommand.Parameters.Add("@RowCount", SqlDbType.Int);
 
                         sqlParameterReturnValue.Direction = ParameterDirection.ReturnValue;
 
+                        // Выполняем SQL-запрос
                         sqlCommand.ExecuteNonQuery();
 
                         totalCounter++; totalRowInserted += (int)sqlParameterReturnValue.Value;

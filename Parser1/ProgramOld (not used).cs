@@ -13,6 +13,7 @@ using System.Threading;
 
 namespace Parser1
 {
+
     internal class Program
     {
         static void Main(string[] args)
